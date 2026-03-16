@@ -18,7 +18,7 @@ OBD Simulator → Kuksa (port 55555) → Zenoh Publisher → Zenoh Subscriber �
 
 ---
 
-## Installation & Setup
+## Installation & Setup (on WSL)
 
 ### 1. Clone this repository
 ```
