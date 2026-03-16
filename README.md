@@ -62,7 +62,6 @@ cd ~/kuksa-databroker/kuksa-ditto
 source venv/bin/activate
 python3 setup_ditto.py
 ```
-This creates the policy and vehicle Thing inside Ditto.
 
 ---
 
