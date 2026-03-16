@@ -43,6 +43,7 @@ cp OBD.json ~/kuksa-databroker/
 ```
 cd ~/kuksa-databroker/kuksa-ditto
 python3 -m venv venv
+sudo apt install python3-pip
 source venv/bin/activate
 pip install kuksa-client requests eclipse-zenoh
 ```
