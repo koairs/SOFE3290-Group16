@@ -2,7 +2,7 @@
 
 ## Overview
 A simulated Software-Defined Vehicle (SDV) data pipeline using Eclipse Kuksa, Eclipse Zenoh, and Eclipse Ditto.
-Vehicle OBD data is generated, sent to Kuksa, transported through Zenoh middleware, and persisted in a Ditto digital twin in real time.
+Vehicle OBD data is generated, sent to Kuksa, transported through Zenoh middleware, and displayed in a Ditto digital twin in real time along with a live monitoring dashboard.
 
 ## System Architecture
 ```
@@ -15,6 +15,16 @@ OBD Simulator → Kuksa (port 55555) → Zenoh Publisher → Zenoh Subscriber �
 | Eclipse Kuksa | Vehicle data abstraction layer |
 | Eclipse Zenoh | Middleware communication layer |
 | Eclipse Ditto | Digital twin and backend state management |
+
+## Requirements
+- WSL/Linux Environment
+- Docker & Docker Compose
+- Python 3.10+
+- Git
+- Python Packages
+  - Kuksa-client
+  - Eclipse-Zenoh
+  - Requests
 
 ---
 
@@ -109,6 +119,13 @@ python3 dashboard.py
 - Terminal 5 shows a live updating dashboard with current vehicle signals and fault status
 - Open http://localhost:8080, navigate to the Ditto UI, and confirm org.vehicle:my-device is updating in real time
 
+---
+---
+
+## To reproduce adaptive signal behaviour:
+1. Run the pipeline using steps above
+2. Observe vehicle data values printed in Terminal 2
+3. The dashboard will update as the mode changes
 ---
 
 ## Functional Modification — Adaptive Signals
