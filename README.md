@@ -96,7 +96,7 @@ python3 zenoh_publisher.py
 ```
 python3 zenoh_subscriber.py
 ```
-**Terminal 5 - Live Monitoring Dashboard: **
+**Terminal 5 — Live Monitoring Dashboard:**
 ```
 python3 dashboard.py
 ```
