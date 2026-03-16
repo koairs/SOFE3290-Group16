@@ -1,11 +1,11 @@
 {
-    "policyId": "org.ovin:my-policy",
+    "policyId": "org.vehicle:my-policy",
     "features": {
         "VehicleSpeed": {
             "properties": {
                 "value": 100.0
             }
-        }, 
+        },
         "EngineSpeed": {
             "properties": {
                 "value": 200.0
