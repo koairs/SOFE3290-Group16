@@ -1,3 +1,5 @@
+#not used
+
 import asyncio
 from kuksa_client.grpc.aio import VSSClient
 import time
