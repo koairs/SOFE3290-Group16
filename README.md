@@ -77,7 +77,7 @@ python3 setup_ditto.py
 
 ## Running the Pipeline
 
-You need 4 terminals. Activate the venv in terminals 2, 3, and 4:
+You need 5 terminals. Activate the venv in terminals 2-5:
 ```
 cd ~/kuksa-databroker/kuksa-ditto
 source venv/bin/activate
@@ -120,10 +120,12 @@ python3 dashboard.py
 - Open http://localhost:8080, navigate to the Ditto UI, and confirm org.vehicle:my-device is updating in real time
 
 ---
-## To reproduce adaptive signal behaviour:
+## Reproducing the Adaptive Signal Behaviour:
 1. Run the pipeline using steps above
 2. Observe vehicle data values printed in Terminal 2
-3. The dashboard will update as the mode changes
+3. As the speed changes, the update mode will also change
+  -IDLE -> NORMAL -> HIGH SPEED
+5. The dashboard will update as the mode changes
 ---
 
 ## Functional Modification — Adaptive Signals
