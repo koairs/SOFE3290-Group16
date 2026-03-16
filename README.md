@@ -34,7 +34,10 @@ cd ~/kuksa-databroker/kuksa-ditto
 source venv/bin/activate
 python3 setup_ditto.py
 
-
+set up zenoh middleware
+cd ~/kuksa-databroker/kuksa-ditto
+source venv/bin/activate
+pip install eclipse-zenoh
 
 
 ^initial setup, from there you need three terminals
@@ -45,10 +48,10 @@ docker run --rm -it -p 55555:55555 \
   ghcr.io/eclipse-kuksa/kuksa-databroker:main \
   --insecure --vss /OBD.json
 
-terminal 2/3:
+terminal 2/3/4:
 cd ~/kuksa-databroker/kuksa-ditto
 source venv/bin/activate
-python3 send_obd_data_to_kuksa.py && send_recieved_obd_data_to_ditto.py
+python3 send_obd_data_to_kuksa.py // python3 zenoh_publisher.py // python3 zenoh_subscriber.py
 
 
 functional mod: Adaptive Signals (work in progress)
