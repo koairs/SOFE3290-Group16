@@ -120,8 +120,6 @@ python3 dashboard.py
 - Open http://localhost:8080, navigate to the Ditto UI, and confirm org.vehicle:my-device is updating in real time
 
 ---
----
-
 ## To reproduce adaptive signal behaviour:
 1. Run the pipeline using steps above
 2. Observe vehicle data values printed in Terminal 2
