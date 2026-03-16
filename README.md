@@ -52,7 +52,7 @@ pip install kuksa-client requests eclipse-zenoh
 ```
 git clone https://github.com/eclipse-ditto/ditto ~/ditto
 cd ~/ditto/deployment/docker/
-docker compose up -d
+sudo docker compose up -d
 ```
 Ditto will be available at http://localhost:8080 (username: ditto, password: ditto)
 
@@ -76,7 +76,7 @@ source venv/bin/activate
 **Terminal 1 — Kuksa Databroker:**
 ```
 cd ~/kuksa-databroker
-docker run --rm -it -p 55555:55555 \
+sudo docker run --rm -it -p 55555:55555 \
   -v "$(pwd)/OBD.json:/OBD.json" \
   ghcr.io/eclipse-kuksa/kuksa-databroker:main \
   --insecure --vss /OBD.json
