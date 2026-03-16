@@ -119,18 +119,3 @@ Signal update rate dynamically adjusts based on vehicle speed:
 | 71+ km/h | HIGH SPEED | every 20ms |
 
 ---
-
-## Project Files
-
-| File | Description |
-|---|---|
-| `send_obd_data_to_kuksa.py` | Generates OBD data with adaptive signals and sends to Kuksa |
-| `zenoh_publisher.py` | Reads from Kuksa and publishes to Zenoh |
-| `zenoh_subscriber.py` | Receives from Zenoh and pushes to Ditto |
-| `OBD.json` | VSS signal definitions for the Kuksa Databroker |
-| `VSS_Ditto.json` | Ditto Thing definition mapping VSS signals |
-| `policy.json` | Ditto access policy for the vehicle Thing |
-| `generate_random_obd_data.py` | Reference — early standalone OBD data generator |
-| `retrieve_obd_data_from_kuksa.py` | Reference — standalone Kuksa data retrieval script |
-| `send_recieved_obd_data_to_ditto.py` | Reference — replaced by Zenoh middleware |
-EOF
