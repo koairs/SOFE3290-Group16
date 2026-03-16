@@ -1,3 +1,5 @@
+#file is for reference, not in use anymore (replaced by Zenoh middleware)
+
 import asyncio
 from kuksa_client.grpc.aio import VSSClient
 import time
