@@ -96,13 +96,17 @@ python3 zenoh_publisher.py
 ```
 python3 zenoh_subscriber.py
 ```
-
+**Terminal 5 - OpenSOVD Diagnostics (monitors vehicle data via Zenoh): **
+```
+python3 opensovd_diagnostics.py
+```
 ---
 
 ## Verifying It Works
 - Terminal 2 prints vehicle values with the current mode (IDLE / NORMAL / HIGH SPEED)
 - Terminal 3 prints data being published to Zenoh
 - Terminal 4 prints data received from Zenoh with a 204 response from Ditto
+- Terminal 5 prints fault classifications in real time (OK / MINOR / MAJOR / CATASTROPHIC)
 - Open http://localhost:8080, navigate to the Ditto UI, and confirm org.vehicle:my-device is updating in real time
 
 ---
