@@ -47,6 +47,7 @@ docker run --rm -it -p 55555:55555 \
 
 terminal 2/3:
 cd ~/kuksa-databroker/kuksa-ditto
+source venv/bin/activate
 python3 send_obd_data_to_kuksa.py && send_recieved_obd_data_to_ditto.py
 
 
