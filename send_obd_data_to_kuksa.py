@@ -1,73 +1,79 @@
 import random
-
 import time
-
 import asyncio
-
 from kuksa_client.grpc.aio import VSSClient
-
 from kuksa_client.grpc import Datapoint
 
-#FAULT_MODE='none', inc log to track sensor injection faults, simulate real world failrues
-#noisy RPM, stuck throttle, signal loss, if/elif
+# Fault injection modes: 'none', 'noisy_rpm', 'stuck_throttle', 'signal_loss'
+FAULT_MODE = 'none'
+
+STUCK_THROTTLE_VALUE = 150
+stuck_throttle_active = False
 
 async def main():
+    global stuck_throttle_active
 
     async with VSSClient('127.0.0.1', 55555) as client:
-
         while True:
+            # Base values
+            VehicleSpeed = random.randint(0, 255)
+            EngineSpeed = random.randint(0, 1000)
+            ThrottlePosition = random.randint(0, 200)
+            CoolantTemperature = random.randint(0, 500)
+            BrakePressure = random.randint(0, 100)
+            TirePressure = random.randint(20, 50)
 
-            VehicleSpeed = random.randint(0,255)
+            fault_log = []
 
-            EngineSpeed = random.randint(0,1000)
+            # Mod 2 - Fault Injection
+            if FAULT_MODE == 'noisy_rpm':
+                noise = random.randint(-100, 100)
+                EngineSpeed = max(0, min(1000, EngineSpeed + noise))
+                fault_log.append(f'[FAULT] Noisy RPM — noise applied: {noise:+d}')
 
-            ThrottlePosition = random.randint(0,200)
+            elif FAULT_MODE == 'stuck_throttle':
+                ThrottlePosition = STUCK_THROTTLE_VALUE
+                fault_log.append(f'[FAULT] Stuck throttle — frozen at {STUCK_THROTTLE_VALUE}')
 
-            CoolantTemperature = random.randint(0,500)
+            elif FAULT_MODE == 'signal_loss':
+                TirePressure = None
+                fault_log.append('[FAULT] Signal loss — Tire pressure unavailable')
 
-            await client.set_current_values({
-
+            # Send to Kuksa (skip None values)
+            values_to_send = {
                 'Vehicle.OBD.VehicleSpeed': Datapoint(VehicleSpeed),
-
                 'Vehicle.OBD.CoolantTemperature': Datapoint(CoolantTemperature),
-
                 'Vehicle.OBD.ThrottlePosition': Datapoint(ThrottlePosition),
-
                 'Vehicle.OBD.EngineSpeed': Datapoint(EngineSpeed),
+                'Vehicle.OBD.BrakePressure': Datapoint(BrakePressure),
+            }
+            if TirePressure is not None:
+                values_to_send['Vehicle.OBD.TirePressure'] = Datapoint(TirePressure)
 
-            })
+            await client.set_current_values(values_to_send)
 
+            # Adaptive signal rate (Mod 1)
             if VehicleSpeed == 0:
-
                 delay = 0.5
-
-                mode = "IDLE"
-
+                mode = 'IDLE'
             elif VehicleSpeed <= 70:
-
                 delay = 0.1
-
-                mode = "NORMAL"
-
+                mode = 'NORMAL'
             else:
-
                 delay = 0.02
+                mode = 'HIGH SPEED'
 
-                mode = "HIGH SPEED"
-
-            print(f'--- Mode: {mode} | Delay: {delay}s ---')
-
-            print('Vehicle Speed = ', VehicleSpeed)
-
-            print('Engine Speed = ', EngineSpeed)
-
-            print('Throttle Position = ', ThrottlePosition)
-
-            print('Coolant Temperature = ', CoolantTemperature)
-
+            print(f'--- Mode: {mode} | Fault: {FAULT_MODE} ---')
+            print(f'  Vehicle Speed    = {VehicleSpeed}')
+            print(f'  Engine Speed     = {EngineSpeed}')
+            print(f'  Throttle         = {ThrottlePosition}')
+            print(f'  Coolant Temp     = {CoolantTemperature}')
+            print(f'  Brake Pressure   = {BrakePressure}')
+            print(f'  Tire Pressure    = {TirePressure if TirePressure is not None else "UNAVAILABLE"}')
+            for log in fault_log:
+                print(f'  {log}')
             print('-----------------------------')
 
-            time.sleep(1)
+            time.sleep(delay)
 
 asyncio.run(main())
-
