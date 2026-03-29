@@ -4,7 +4,6 @@ import asyncio
 from kuksa_client.grpc.aio import VSSClient
 from kuksa_client.grpc import Datapoint
 
-# Fault injection modes: 'none', 'noisy_rpm', 'stuck_throttle', 'signal_loss'
 FAULT_MODE = 'none'
 
 STUCK_THROTTLE_VALUE = 150
@@ -15,7 +14,7 @@ async def main():
 
     async with VSSClient('127.0.0.1', 55555) as client:
         while True:
-            # Base values
+
             VehicleSpeed = random.randint(0, 255)
             EngineSpeed = random.randint(0, 1000)
             ThrottlePosition = random.randint(0, 200)
@@ -39,7 +38,6 @@ async def main():
                 TirePressure = None
                 fault_log.append('[FAULT] Signal loss — Tire pressure unavailable')
 
-            # Send to Kuksa (skip None values)
             values_to_send = {
                 'Vehicle.OBD.VehicleSpeed': Datapoint(VehicleSpeed),
                 'Vehicle.OBD.CoolantTemperature': Datapoint(CoolantTemperature),
@@ -52,7 +50,6 @@ async def main():
 
             await client.set_current_values(values_to_send)
 
-            # Adaptive signal rate (Mod 1)
             if VehicleSpeed == 0:
                 delay = 0.5
                 mode = 'IDLE'
