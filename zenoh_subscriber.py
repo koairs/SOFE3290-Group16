@@ -3,8 +3,6 @@ import json
 import requests
 import time
 
-#Mod ditto data, vehicle marked unsafe, if specific cond occur
-
 thingsURL = "http://localhost:8080/api/2/things/"
 auth = ("ditto", "ditto")
 
