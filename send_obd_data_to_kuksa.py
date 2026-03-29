@@ -8,6 +8,10 @@ from kuksa_client.grpc.aio import VSSClient
 
 from kuksa_client.grpc import Datapoint
 
+#FAULT_MODE='none', inc log to track sensor injection faults, simulate real world failrues
+#noisy RPM, stuck throttle, signal loss, if/elif
+
+
 async def main():
 
     async with VSSClient('127.0.0.1', 55555) as client:
