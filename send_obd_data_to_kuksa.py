@@ -16,7 +16,7 @@ async def main():
         while True:
 
             VehicleSpeed = random.randint(0, 255)
-            EngineSpeed = random.randint(0, 1000)
+            EngineSpeed = random.randint(0, 7000)
             ThrottlePosition = random.randint(0, 200)
             CoolantTemperature = random.randint(0, 500)
             BrakePressure = random.randint(0, 100)
@@ -27,7 +27,7 @@ async def main():
             # Mod 2 - Fault Injection
             if FAULT_MODE == 'noisy_rpm':
                 noise = random.randint(-100, 100)
-                EngineSpeed = max(0, min(1000, EngineSpeed + noise))
+                EngineSpeed = max(0, min(7000, EngineSpeed + noise))
                 fault_log.append(f'[FAULT] Noisy RPM — noise applied: {noise:+d}')
 
             elif FAULT_MODE == 'stuck_throttle':
