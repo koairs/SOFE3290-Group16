@@ -87,9 +87,10 @@ source venv/bin/activate
 ```
 cd ~/kuksa-databroker
 sudo docker run --rm -it -p 55555:55555 \
-  -v "$(pwd)/OBD.json:/OBD.json" \
+  -v "$(pwd)/kuksa-ditto/OBD.json:/OBD.json" \
   ghcr.io/eclipse-kuksa/kuksa-databroker:main \
-  --insecure --vss /OBD.json
+  --insecure --metadata /OBD.json
+
 ```
 
 **Terminal 2 — Generate and send OBD data to Kuksa:**
