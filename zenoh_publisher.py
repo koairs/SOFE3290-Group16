@@ -5,7 +5,6 @@ import random
 import zenoh
 from kuksa_client.grpc.aio import VSSClient
 
-# Network mode: 'normal', 'medium', 'high'
 NETWORK_MODE = 'normal'
 
 NETWORK_CONFIG = {
@@ -50,13 +49,11 @@ async def main():
 
             config = NETWORK_CONFIG[NETWORK_MODE]
 
-            # Packet drop simulation
             if random.random() < config['packet_drop']:
                 print(f'[Zenoh Publisher] [{NETWORK_MODE.upper()}] Packet DROPPED')
                 time.sleep(config['latency'])
                 continue
 
-            # Message filtering — suppress low priority when congested
             if NETWORK_MODE in ('medium', 'high'):
                 filtered = {k: v for k, v in data.items() if k not in LOW_PRIORITY}
                 suppressed = [k for k in data if k in LOW_PRIORITY]
@@ -64,7 +61,6 @@ async def main():
                     print(f'[Zenoh Publisher] [{NETWORK_MODE.upper()}] Suppressed: {suppressed}')
                 data = filtered
 
-            # Artificial latency
             time.sleep(config['latency'])
 
             pub.put(json.dumps(data))
