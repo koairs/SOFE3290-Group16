@@ -20,6 +20,16 @@
             "properties": {
                 "value": 40.0
             }
+        },
+        "BrakePressure": {
+            "properties": {
+                "value": 30.0
+            }
+        },
+        "TirePressure": {
+            "properties": {
+                "value": 30.0
+            }
         }
     }
 }
