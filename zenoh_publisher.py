@@ -1,8 +1,21 @@
 import asyncio
 import time
 import json
+import random
 import zenoh
 from kuksa_client.grpc.aio import VSSClient
+
+# Network mode: 'normal', 'medium', 'high'
+NETWORK_MODE = 'normal'
+
+NETWORK_CONFIG = {
+    'normal': {'latency': 0.01, 'packet_drop': 0.0},
+    'medium': {'latency': 0.075, 'packet_drop': 0.02},
+    'high':   {'latency': 0.15,  'packet_drop': 0.08},
+}
+
+HIGH_PRIORITY = {'VehicleSpeed', 'BrakePressure'}
+LOW_PRIORITY  = {'EngineSpeed'}
 
 async def main():
     session = zenoh.open(zenoh.Config())
@@ -14,18 +27,47 @@ async def main():
                 'Vehicle.OBD.VehicleSpeed',
                 'Vehicle.OBD.CoolantTemperature',
                 'Vehicle.OBD.ThrottlePosition',
-                'Vehicle.OBD.EngineSpeed'
+                'Vehicle.OBD.EngineSpeed',
+                'Vehicle.OBD.BrakePressure',
+                'Vehicle.OBD.TirePressure',
             ])
 
-            data = {
-                'VehicleSpeed': values['Vehicle.OBD.VehicleSpeed'].value,
-                'EngineSpeed': values['Vehicle.OBD.EngineSpeed'].value,
-                'ThrottlePosition': values['Vehicle.OBD.ThrottlePosition'].value,
-                'CoolantTemperature': values['Vehicle.OBD.CoolantTemperature'].value,
-            }
+            data = {}
+            for key, signal in [
+                ('VehicleSpeed',     'Vehicle.OBD.VehicleSpeed'),
+                ('EngineSpeed',      'Vehicle.OBD.EngineSpeed'),
+                ('ThrottlePosition', 'Vehicle.OBD.ThrottlePosition'),
+                ('CoolantTemperature','Vehicle.OBD.CoolantTemperature'),
+                ('BrakePressure',    'Vehicle.OBD.BrakePressure'),
+                ('TirePressure',     'Vehicle.OBD.TirePressure'),
+            ]:
+                try:
+                    v = values[signal].value
+                    if v is not None:
+                        data[key] = v
+                except:
+                    pass
+
+            config = NETWORK_CONFIG[NETWORK_MODE]
+
+            # Packet drop simulation
+            if random.random() < config['packet_drop']:
+                print(f'[Zenoh Publisher] [{NETWORK_MODE.upper()}] Packet DROPPED')
+                time.sleep(config['latency'])
+                continue
+
+            # Message filtering — suppress low priority when congested
+            if NETWORK_MODE in ('medium', 'high'):
+                filtered = {k: v for k, v in data.items() if k not in LOW_PRIORITY}
+                suppressed = [k for k in data if k in LOW_PRIORITY]
+                if suppressed:
+                    print(f'[Zenoh Publisher] [{NETWORK_MODE.upper()}] Suppressed: {suppressed}')
+                data = filtered
+
+            # Artificial latency
+            time.sleep(config['latency'])
 
             pub.put(json.dumps(data))
-            print(f'[Zenoh Publisher] Published: {data}')
-            time.sleep(1)
+            print(f'[Zenoh Publisher] [{NETWORK_MODE.upper()}] Published: {data}')
 
 asyncio.run(main())
