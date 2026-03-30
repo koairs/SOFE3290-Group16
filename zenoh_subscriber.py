@@ -39,6 +39,12 @@ def on_message(sample):
         print(f'  -> Sent {feature}={value} to Ditto | Response: {response.status_code}')
 
     alerts = check_safety_rules(data)
+      safety_payload = {
+        "unsafe": len(alerts) > 0,
+        "alerts": alerts
+    }
+    put_feature_value('org.vehicle:my-device', 'safetyStatus', safety_payload)
+
     if alerts:
         print('Safety alerts: :')
         for alert in alerts:
