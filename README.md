@@ -110,6 +110,10 @@ python3 zenoh_subscriber.py
 ```
 python3 dashboard.py
 ```
+**Terminal 6 — OpenSOVD Diagnostics**
+```
+python3 opensovd_diagnostics.py
+```
 ---
 
 ## Verifying It Works
@@ -117,26 +121,7 @@ python3 dashboard.py
 - Terminal 3 prints data being published to Zenoh
 - Terminal 4 prints data received from Zenoh with a 204 response from Ditto
 - Terminal 5 shows a live updating dashboard with current vehicle signals and fault status
+- Terminal 6 shows OpenSOVD diagnostics
 - Open http://localhost:8080, navigate to the Ditto UI, and confirm org.vehicle:my-device is updating in real time
-
----
-## Reproducing the Adaptive Signal Behaviour:
-1. Run the pipeline using steps above
-2. Observe vehicle data values printed in Terminal 2
-3. As the speed changes, the update mode will also change
-  -IDLE -> NORMAL -> HIGH SPEED
-5. The dashboard will update as the mode changes
----
-
-## Functional Modification — Adaptive Signals
-Implemented in `send_obd_data_to_kuksa.py`.
-
-Signal update rate dynamically adjusts based on vehicle speed:
-
-| Speed | Mode | Update Rate |
-|---|---|---|
-| 0 km/h | IDLE | every 500ms |
-| 1 – 70 km/h | NORMAL | every 100ms |
-| 71+ km/h | HIGH SPEED | every 20ms |
 
 ---
