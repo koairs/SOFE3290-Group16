@@ -3,9 +3,10 @@ import time
 import json
 import random
 import zenoh
+import os
 from kuksa_client.grpc.aio import VSSClient
 
-NETWORK_MODE = 'normal'
+NETWORK_MODE = os.getenv("NETWORK_MODE", "normal")
 
 NETWORK_CONFIG = {
     'normal': {'latency': 0.01, 'packet_drop': 0.0},
@@ -54,12 +55,12 @@ async def main():
                 time.sleep(config['latency'])
                 continue
 
-            if NETWORK_MODE in ('medium', 'high'):
-                filtered = {k: v for k, v in data.items() if k not in LOW_PRIORITY}
-                suppressed = [k for k in data if k in LOW_PRIORITY]
+          if NETWORK_MODE in ('medium', 'high'):
+                suppressed = [k for k in data if k not in HIGH_PRIORITY]
                 if suppressed:
                     print(f'[Zenoh Publisher] [{NETWORK_MODE.upper()}] Suppressed: {suppressed}')
-                data = filtered
+
+                data = {k: v for k, v in data.items() if k in HIGH_PRIORITY}
 
             time.sleep(config['latency'])
 
