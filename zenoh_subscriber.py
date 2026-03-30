@@ -25,7 +25,7 @@ def check_safety_rules(data):
     if speed > 0 and brake == 0:
         alerts.append('Unsafe: Vehicle is moving with no brake pressure')
 
-    if tire is not None and tire <= 30:
+    if speed is not None and tire <= 30:
         alerts.append(f'Unsafe: Tire pressure is critical ({tire} psi)')
 
     return alerts
