@@ -67,6 +67,6 @@ async def main():
                 print(f'  {log}')
             print('-----------------------------')
 
-            time.sleep(1)
+            time.sleep(1 + delay)
 
 asyncio.run(main())
