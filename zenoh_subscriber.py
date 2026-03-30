@@ -43,7 +43,6 @@ def on_message(sample):
     # Safety logic
     alerts = check_safety_rules(data)
     
-    # FIXED INDENTATION HERE
     safety_payload = {
         "unsafe": len(alerts) > 0,
         "alerts": alerts
