@@ -44,6 +44,20 @@
             "type": "sensor",
             "unit": "percent",
             "uuid": "06f162dc00a85f628f9d5d1bc952665c"
+          },
+          "BrakePressure": {
+            "datatype": "float",
+            "description": "Brake pedal pressure",
+            "type": "sensor",
+            "unit": "percent",
+            "uuid": "f32a51db294c5d6387e1492b4510cd92"
+          },
+          "TirePressure": {
+            "datatype": "float",
+            "description": "Tire pressure level",
+            "type": "sensor",
+            "unit": "psi",
+            "uuid": "d91e8bc24fb15a84913cd784b0717b41"
           }
         },
         "description": "OBD data.",
