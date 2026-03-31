@@ -1,4 +1,4 @@
-# SOFE 3290U - Group 16 - Iteration 1: Baseline SDV Pipeline
+# SOFE 3290U - Group 16 - Iteration 2: Baseline SDV Pipeline
 
 ## Overview
 A simulated Software-Defined Vehicle (SDV) data pipeline using Eclipse Kuksa, Eclipse Zenoh, and Eclipse Ditto.
@@ -7,6 +7,8 @@ Vehicle OBD data is generated, sent to Kuksa, transported through Zenoh middlewa
 ## System Architecture
 ```
 OBD Simulator → Kuksa (port 55555) → Zenoh Publisher → Zenoh Subscriber → Ditto (port 8080)
+                                             ↓                                      ↓
+                                   OpenSOVD Diagnostics                        Dashboard
 ```
 
 ## Components
@@ -15,6 +17,8 @@ OBD Simulator → Kuksa (port 55555) → Zenoh Publisher → Zenoh Subscriber �
 | Eclipse Kuksa | Vehicle data abstraction layer |
 | Eclipse Zenoh | Middleware communication layer |
 | Eclipse Ditto | Digital twin and backend state management |
+| OpenSOVD (simulated) | Diagnostic fault classification and health monitoring |
+| Dashboard | Live terminal monitoring and visualization interface |
 
 ## Requirements
 - WSL/Linux Environment
@@ -124,5 +128,73 @@ python3 dashboard.py
 - Terminal 5 shows OpenSOVD diagnostics
 - Terminal 6 shows a live updating dashboard with current vehicle signals and fault status
 - Open http://localhost:8080, navigate to the Ditto UI, and confirm org.vehicle:my-device is updating in real time
+
+---
+## Functional Modifications
+
+### Modification 1 — Adaptive Signals
+Implemented in `send_obd_data_to_kuksa.py`.
+Signal update rate dynamically adjusts based on vehicle speed:
+
+| Speed | Mode | Update Rate |
+|---|---|---|
+| 0 km/h | IDLE | every 500ms |
+| 1 – 70 km/h | NORMAL | every 100ms |
+| 71+ km/h | HIGH SPEED | every 20ms |
+
+### Modification 2 — Sensor Fault Injection
+Implemented in `send_obd_data_to_kuksa.py`.
+Randomly injects one of three sensor faults each iteration:
+
+| Fault | Description |
+|---|---|
+| `noisy_rpm` | Adds random noise to engine speed to simulate a degraded sensor |
+| `stuck_throttle` | Freezes throttle position at 150 to simulate a stuck sensor |
+| `signal_loss` | Sets tire pressure to unavailable to simulate a lost signal |
+
+Normal operation is weighted more heavily so faults occur realistically rather than constantly.
+
+### Modification 3 — Engine Safety Rules
+Implemented in `zenoh_subscriber.py`.
+Checks incoming data against safety rules and triggers alerts:
+
+| Condition | Alert |
+|---|---|
+| Speed > 100 km/h and brake pressure < 20 | High speed with low brake pressure |
+| Speed > 0 and brake pressure = 0 | Vehicle moving with zero brake pressure |
+| Tire pressure <= 30 psi | Tire pressure critical |
+
+### Modification 4 — Network Behavior Control
+Implemented in `zenoh_publisher.py`.
+Simulates real-world network conditions with three configurable modes:
+
+| Mode | Latency | Packet Drop | Filtering |
+|---|---|---|---|
+| `normal` | 10ms | 0% | None |
+| `medium` | 75ms | 2% | Suppresses low priority signals (RPM) |
+| `high` | 150ms | 8% | Suppresses low priority signals (RPM) |
+
+Change `NETWORK_MODE` at the top of `zenoh_publisher.py` to switch modes.
+
+### Modification 5 — Diagnostic Intelligence (OpenSOVD)
+Implemented in `opensovd_diagnostics.py` and `dashboard.py`.
+Provides real-time diagnostic reasoning on vehicle data via Zenoh:
+
+**Fault Severity Classification:**
+
+| Faults Detected | Severity | Response |
+|---|---|---|
+| 0 | OK | All systems nominal |
+| 1 | MINOR | Warning |
+| 2 | MAJOR | Critical Alert |
+| 3+ | CATASTROPHIC | Immediate Stop Required |
+
+**Historical Fault Queries:**
+- Tracks last 5 safety violations
+- Reports number of unsafe events in the last 5 minutes
+- Reports most frequent fault type
+
+**Diagnostic Response Time Tracker:**
+- Logs request timestamp, response timestamp, and processing time for every diagnostic cycle
 
 ---
