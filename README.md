@@ -81,7 +81,7 @@ python3 setup_ditto.py
 
 ## Running the Pipeline
 
-You need 5 terminals. Activate the venv in terminals 2-5:
+You need 6 terminals. Activate the venv in terminals 2-6:
 ```
 cd ~/kuksa-databroker/kuksa-ditto
 source venv/bin/activate
